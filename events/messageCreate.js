@@ -1,7 +1,9 @@
+const { Events } = require('discord.js');
+const King = require('../commands/moderation/King'); // Đường dẫn chuẩn tới King.js
+
 module.exports = {
-  name: 'messageCreate',
+  name: Events.MessageCreate,
   execute(message) {
-    const kingCommand = require('../commands/King'); // Đường dẫn file King.js
-    kingCommand.checkDeobam(message);
+    King.checkDeobam(message);
   },
 };
