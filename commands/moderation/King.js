@@ -1,60 +1,75 @@
-const { SlashCommandBuilder, PermissionsBitField } = require('discord.js');
-
-const activeDeobamUsers = new Set(); // Danh sách lưu người dùng bị "deobam"
+const { SlashCommandBuilder, EmbedBuilder } = require('discord.js');
+const activeCuongepUsers = new Map(); // Lưu người bị cưỡng ép và câu yêu cầu
 
 module.exports = {
   data: new SlashCommandBuilder()
     .setName('king')
-    .setDescription('Lệnh King gồm nhiều tính năng mạnh mẽ')
+    .setDescription('Lệnh King với nhiều tính năng')
     .addSubcommand(subcommand =>
       subcommand
-        .setName('deobam')
-        .setDescription('Gán trạng thái bóng ma cho người dùng được tag')
+        .setName('cuongep')
+        .setDescription('Cưỡng ép người dùng viết đúng câu bạn yêu cầu.')
         .addUserOption(option =>
-          option
-            .setName('target')
-            .setDescription('Người bạn muốn gán trạng thái bóng ma')
+          option.setName('target')
+            .setDescription('Người bạn muốn cưỡng ép')
+            .setRequired(true)
+        )
+        .addStringOption(option =>
+          option.setName('sentence')
+            .setDescription('Câu bạn muốn người bị cưỡng ép viết')
             .setRequired(true)
         )
     )
     .addSubcommand(subcommand =>
-      subcommand
-        .setName('off')
-        .setDescription('Gỡ bỏ trạng thái bóng ma cho tất cả người dùng')
+      subcommand.setName('off')
+        .setDescription('Gỡ bỏ trạng thái bóng ma hoặc cưỡng ép cho tất cả người dùng')
     ),
 
   async execute(interaction) {
     const subcommand = interaction.options.getSubcommand();
 
-    // Xử lý lệnh deobam
-    if (subcommand === 'deobam') {
+    if (subcommand === 'cuongep') {
       const targetUser = interaction.options.getUser('target');
-      if (targetUser.bot) return interaction.reply({ content: '🤖 Bạn không thể gán trạng thái bóng ma cho bot!', ephemeral: true });
+      const requiredSentence = interaction.options.getString('sentence');
 
-      // Thêm người dùng vào danh sách bị deobam
-      activeDeobamUsers.add(targetUser.id);
-      await interaction.reply(`👻 **${targetUser.username}** đã bị bóng ma đeo bám và không thể gửi tin nhắn! Hãy van xin chủ nhân dùng lệnh \`/king off\` để giải trừ 👻🌑⛏️ **DEO BAM KING👑**`);
+      if (targetUser.bot) {
+        return interaction.reply({ content: '🤖 Bạn không thể cưỡng ép bot!', ephemeral: true });
+      }
+
+      activeCuongepUsers.set(targetUser.id, requiredSentence);
+
+      const embed = new EmbedBuilder()
+        .setColor(0xff0000)
+        .setTitle('👻 Bóng Ma Cưỡng Ép')
+        .setDescription(`Mày Đã Bị Ma Thần Cưỡng Ép:\n\n**"${requiredSentence}"**\nNếu không, mọi tin nhắn của mày sẽ bị xóa ngay lập tức!`)
+        .setImage('https://media1.giphy.com/media/v1.Y2lkPTc5MGI3NjExM2RpdmJqNTlhYzlnd2NkdW54bzg1ZmM2Njdia3AyamU2dzRpczR4ZiZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/GWfLdlJSv2YcJGSe67/giphy.gif');
+
+      await interaction.reply({ content: `👻 **${targetUser.username}** đã bị cưỡng ép viết đúng câu yêu cầu!`, embeds: [embed] });
     }
 
-    // Xử lý lệnh off
     else if (subcommand === 'off') {
-      activeDeobamUsers.clear(); // Gỡ bỏ trạng thái của tất cả người dùng
-      await interaction.reply('✨ Tất cả trạng thái bóng ma đã được giải trừ. Người dùng có thể hoạt động lại bình thường!');
+      activeCuongepUsers.clear();
+      await interaction.reply('✨ Trạng thái bóng ma và cưỡng ép đã được giải trừ!');
     }
   },
 
   /**
-   * Kiểm tra và xóa tin nhắn của người bị deobam
-   * Hàm này sẽ được gọi từ file event của bot (messageCreate)
+   * Kiểm tra và xóa tin nhắn của người bị cưỡng ép nếu không đúng câu yêu cầu
    */
-  checkDeobam(message) {
-    if (activeDeobamUsers.has(message.author.id)) {
-      message.delete()
-        .then(() => {
-          message.channel.send(`🚫 **Warning⚠️** 😇Mày Đã Bị Bóng Ma Đeo Bám Hãy Van Xin Chủ Nhân dùng lệnh /king off Để Giải trừ👻🌑⛏️: **DEO BAM KING👑**.`)
-            .then(msg => setTimeout(() => msg.delete(), 5000)); // Xóa cảnh báo sau 5 giây
-        })
-        .catch(console.error);
+  checkCuongep(message) {
+    const requiredSentence = activeCuongepUsers.get(message.author.id);
+    if (requiredSentence) {
+      if (message.content !== requiredSentence) {
+        message.delete()
+          .then(() => {
+            message.channel.send(`🚫 **Warning⚠️** 👻 Bạn đã không viết đúng câu yêu cầu👑! Hãy tuân thủ: **"${requiredSentence}"**.`)
+              .then(msg => setTimeout(() => msg.delete(), 5000)); // Xóa cảnh báo sau 5 giây
+          })
+          .catch(console.error);
+      } else {
+        activeCuongepUsers.delete(message.author.id); // Gỡ bỏ trạng thái cưỡng ép khi viết đúng
+        message.channel.send(`🎉 **${message.author.username}** đã hoàn thành yêu🔮 cầu bóng ma tạm tha👻!`).then(msg => setTimeout(() => msg.delete(), 5000));
+      }
     }
   }
 };
