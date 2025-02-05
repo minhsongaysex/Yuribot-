@@ -1,4 +1,4 @@
-const { SlashCommandBuilder, EmbedBuilder } = require('discord.js');
+const { SlashCommandBuilder, EmbedBuilder, PermissionsBitField } = require('discord.js');
 
 const activeCuongepUsers = new Map();
 const activeDeobamUsers = new Set();
@@ -58,49 +58,64 @@ module.exports = {
       const executorId = interaction.user.id;
       let successCount = 0;
 
-      const members = await guild.members.fetch();
-      for (const [memberId, member] of members) {
-        if (!member.user.bot && memberId !== executorId) {
-          try {
-            originalNicknames.set(memberId, member.nickname || member.user.username); // Lưu biệt danh cũ
-            await member.setNickname(newNickname);
-            successCount++;
-          } catch (error) {
-            console.error(`Không thể đổi biệt danh cho ${member.user.tag}:`, error);
-          }
-        }
+      if (!guild.members.me.permissions.has(PermissionsBitField.Flags.ManageNicknames)) {
+        return interaction.reply({
+          content: '❌ Bot không có quyền đổi biệt danh! Vui lòng cấp quyền "Manage Nicknames".',
+          ephemeral: true
+        });
       }
 
-      const embed = new EmbedBuilder()
-        .setColor(0xffc300)
-        .setTitle('🎭 **『Bành Trướng Lãnh Địa』!** 🎭')
-        .setDescription(`👑 Đã đổi biệt danh cho **${successCount}** thành viên thành **"${newNickname}"**.`)
-        .setImage('https://media4.giphy.com/media/v1.Y2lkPTc5MGI3NjExeG1maWJ4djRucm96bWp4amlwajhnYnA3bGl5MW9nemIxbjNwZjJjMCZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/v7OFL1RGk1m4qTNsb2/giphy.gif');
-
-      await interaction.reply({ embeds: [embed] });
-
-      // ⏳ Tự động đặt lại biệt danh sau 5 phút
-      setTimeout(async () => {
-        let resetCount = 0;
-        for (const [memberId, oldNickname] of originalNicknames) {
-          try {
-            const member = await guild.members.fetch(memberId);
-            await member.setNickname(oldNickname);
-            resetCount++;
-          } catch (error) {
-            console.error(`Không thể đặt lại biệt danh cho ${memberId}:`, error);
+      try {
+        const members = await guild.members.fetch();
+        const updatePromises = members.map(async (member) => {
+          if (!member.user.bot && member.id !== executorId && member.manageable) {
+            originalNicknames.set(member.id, member.nickname || member.user.username);
+            await member.setNickname(newNickname);
+            successCount++;
           }
-        }
-        originalNicknames.clear();
-        await interaction.followUp(`🔄 **Đã đặt lại biệt danh cũ cho ${resetCount} thành viên!**`);
-      }, 300000); // 300000ms = 5 phút
+        });
+
+        await Promise.all(updatePromises);
+
+        const embed = new EmbedBuilder()
+          .setColor(0xffc300)
+          .setTitle('🎭 **Bóng Ma Thức Dậy!** 🌙')
+          .setDescription(`👑 Đã đổi biệt danh cho **${successCount}** thành viên thành **"${newNickname}"**.`)
+          .setImage('https://media4.giphy.com/media/v1.Y2lkPTc5MGI3NjExeG1maWJ4djRucm96bWp4amlwajhnYnA3bGl5MW9nemIxbjNwZjJjMCZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/v7OFL1RGk1m4qTNsb2/giphy.gif');
+
+        await interaction.reply({ embeds: [embed] });
+
+        // ⏳ Tự động đặt lại biệt danh sau 5 phút
+        setTimeout(async () => {
+          let resetCount = 0;
+          const resetPromises = Array.from(originalNicknames).map(async ([memberId, oldNickname]) => {
+            try {
+              const member = await guild.members.fetch(memberId);
+              if (member.manageable) {
+                await member.setNickname(oldNickname);
+                resetCount++;
+              }
+            } catch (error) {
+              console.error(`Không thể đặt lại biệt danh cho ${memberId}:`, error);
+            }
+          });
+
+          await Promise.all(resetPromises);
+          originalNicknames.clear();
+
+          await interaction.followUp(`🔄 **Đã đặt lại biệt danh cũ cho ${resetCount} thành viên!**`);
+        }, 300000); // 300000ms = 5 phút
+      } catch (error) {
+        console.error('Lỗi khi đổi biệt danh:', error);
+        await interaction.reply({ content: '❌ Đã xảy ra lỗi khi đổi biệt danh. Vui lòng kiểm tra bot hoặc thử lại.', ephemeral: true });
+      }
     }
 
     // 👻 Xử lý lệnh ĐEO BÁM (cấm nhắn tin)
     else if (subcommand === 'deobam') {
       const targetUser = interaction.options.getUser('target');
       activeDeobamUsers.add(targetUser.id);
-      await interaction.reply(`👻 **${targetUser.username}** đã bị đeo bám! Không thể gửi tin nhắn hãy ib https://www.facebook.com/lms.cutii/ để giải.`);
+      await interaction.reply(`👻 **${targetUser.username}** đã bị đeo bám! Không thể gửi tin nhắn cho đến khi bị giải trừ.`);
     }
 
     // 🚨 Xử lý lệnh CƯỠNG ÉP (bắt buộc người chơi viết đúng câu)
@@ -111,7 +126,7 @@ module.exports = {
 
       const embed = new EmbedBuilder()
         .setColor(0xff0000)
-        .setTitle('🚨 **『Yuri Thông Báo』!** 🚨')
+        .setTitle('🚨 **Yuri Support!** 🚨')
         .setDescription(`👑 **${targetUser.username}**, bạn đã bị cưỡng ép!  
         🔹 Hãy viết chính xác câu: **"${sentence}"**  
         🔹 Nếu không, mọi tin nhắn của bạn sẽ bị xóa!`)
