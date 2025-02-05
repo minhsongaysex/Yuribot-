@@ -10,11 +10,11 @@ module.exports = {
     .setDescription('Lệnh King với nhiều tính năng mạnh mẽ')
     .addSubcommand(subcommand =>
       subcommand
-        .setName('banhtruong')
-        .setDescription('Đổi biệt danh toàn bộ thành viên trong server')
-        .addStringOption(option =>
-          option.setName('nickname')
-            .setDescription('Biệt danh bạn muốn đặt cho mọi người')
+        .setName('phanquyet')
+        .setDescription('Phán quyết một thành viên có tội hay không với tỷ lệ ngẫu nhiên.')
+        .addUserOption(option =>
+          option.setName('user')
+            .setDescription('Người bạn muốn phán quyết')
             .setRequired(true)
         )
     )
@@ -51,74 +51,46 @@ module.exports = {
   async execute(interaction) {
     const subcommand = interaction.options.getSubcommand();
 
-    // 🏆 Xử lý lệnh BANH TRƯỜNG (đổi biệt danh toàn server)
-    if (subcommand === 'banhtruong') {
-      const guild = interaction.guild;
-      const newNickname = interaction.options.getString('nickname');
-      const executorId = interaction.user.id;
-      let successCount = 0;
+    // 🏆 Xử lý lệnh PHÁN QUYẾT
+    if (subcommand === 'phanquyet') {
+      const user = interaction.options.getUser('user');
 
-      if (!guild.members.me.permissions.has(PermissionsBitField.Flags.ManageNicknames)) {
+      if (!interaction.member.permissions.has(PermissionsBitField.Flags.KickMembers)) {
         return interaction.reply({
-          content: '❌ Bot không có quyền đổi biệt danh! Vui lòng cấp quyền "Manage Nicknames".',
-          ephemeral: true
+          content: '❌ Bạn không có quyền phán quyết thành viên!',
+          ephemeral: true,
         });
       }
 
-      try {
-        const members = await guild.members.fetch();
-        const updatePromises = members.map(async (member) => {
-          if (!member.user.bot && member.id !== executorId && member.manageable) {
-            originalNicknames.set(member.id, member.nickname || member.user.username);
-            await member.setNickname(newNickname);
-            successCount++;
-          }
-        });
+      const member = await interaction.guild.members.fetch(user.id);
 
-        await Promise.all(updatePromises);
+      if (!member) {
+        return interaction.reply({ content: '❌ Người dùng này không có trong server!', ephemeral: true });
+      }
 
-        const embed = new EmbedBuilder()
-          .setColor(0xffc300)
-          .setTitle('🎭 **Bóng Ma Thức Dậy!** 🌙')
-          .setDescription(`👑 Đã đổi biệt danh cho **${successCount}** thành viên thành **"${newNickname}"**.`)
-          .setImage('https://media4.giphy.com/media/v1.Y2lkPTc5MGI3NjExeG1maWJ4djRucm96bWp4amlwajhnYnA3bGl5MW9nemIxbjNwZjJjMCZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/v7OFL1RGk1m4qTNsb2/giphy.gif');
+      const randomOutcome = Math.random() < 0.5; // Tỉ lệ 50% kick ngẫu nhiên
 
-        await interaction.reply({ embeds: [embed] });
-
-        // ⏳ Tự động đặt lại biệt danh sau 5 phút
-        setTimeout(async () => {
-          let resetCount = 0;
-          const resetPromises = Array.from(originalNicknames).map(async ([memberId, oldNickname]) => {
-            try {
-              const member = await guild.members.fetch(memberId);
-              if (member.manageable) {
-                await member.setNickname(oldNickname);
-                resetCount++;
-              }
-            } catch (error) {
-              console.error(`Không thể đặt lại biệt danh cho ${memberId}:`, error);
-            }
-          });
-
-          await Promise.all(resetPromises);
-          originalNicknames.clear();
-
-          await interaction.followUp(`🔄 **Đã đặt lại biệt danh cũ cho ${resetCount} thành viên!**`);
-        }, 300000); // 300000ms = 5 phút
-      } catch (error) {
-        console.error('Lỗi khi đổi biệt danh:', error);
-        await interaction.reply({ content: '❌ Đã xảy ra lỗi khi đổi biệt danh. Vui lòng kiểm tra bot hoặc thử lại.', ephemeral: true });
+      if (randomOutcome) {
+        try {
+          await member.kick('Bị kick theo phán quyết ngẫu nhiên của King');
+          return interaction.reply(`🔨 **${user.tag}** đã bị phán quyết có tội và bị kick khỏi server!`);
+        } catch (error) {
+          console.error('Lỗi khi kick thành viên:', error);
+          return interaction.reply({ content: '❌ Không thể kick thành viên này!', ephemeral: true });
+        }
+      } else {
+        return interaction.reply(`👻 **${user.tag}** vô tội! Bóng ma đã hiểu lầm bạn 🌙`);
       }
     }
 
-    // 👻 Xử lý lệnh ĐEO BÁM (cấm nhắn tin)
+    // 👻 Xử lý lệnh ĐEO BÁM
     else if (subcommand === 'deobam') {
       const targetUser = interaction.options.getUser('target');
       activeDeobamUsers.add(targetUser.id);
       await interaction.reply(`👻 **${targetUser.username}** đã bị đeo bám! Không thể gửi tin nhắn cho đến khi bị giải trừ.`);
     }
 
-    // 🚨 Xử lý lệnh CƯỠNG ÉP (bắt buộc người chơi viết đúng câu)
+    // 🚨 Xử lý lệnh CƯỠNG ÉP
     else if (subcommand === 'cuongep') {
       const targetUser = interaction.options.getUser('target');
       const sentence = interaction.options.getString('sentence');
@@ -135,7 +107,7 @@ module.exports = {
       await interaction.reply({ embeds: [embed] });
     }
 
-    // ❌ Xử lý lệnh OFF (xóa toàn bộ hiệu ứng)
+    // ❌ Xử lý lệnh OFF
     else if (subcommand === 'off') {
       activeDeobamUsers.clear();
       activeCuongepUsers.clear();
