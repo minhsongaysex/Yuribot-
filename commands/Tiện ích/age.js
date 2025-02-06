@@ -1,10 +1,9 @@
 const { SlashCommandBuilder } = require('discord.js');
-const fetch = require('node-fetch');
 
 module.exports = {
   data: new SlashCommandBuilder()
     .setName('age')
-    .setDescription('Dự đoán giới tính và độ tuổi dựa trên tên.')
+    .setDescription('Dự đoán độ tuổi dựa trên tên.')
     .addStringOption(option =>
       option.setName('name')
         .setDescription('Tên bạn muốn kiểm tra')
@@ -14,6 +13,7 @@ module.exports = {
     const name = interaction.options.getString('name');
 
     try {
+      const fetch = (await import('node-fetch')).default;
       const response = await fetch(`https://api.genderize.io/?name=${encodeURIComponent(name)}`);
       const data = await response.json();
 
