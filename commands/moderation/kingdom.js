@@ -13,9 +13,9 @@ const LEVEL_REQUIREMENTS = {
 };
 
 const KINGDOM_IMAGES = {
-  1: 'https://i.imgur.com/lv1.png',
-  2: 'https://i.imgur.com/lv2.png',
-  3: 'https://i.imgur.com/lv3.png'
+  1: 'https://i.imgur.com/weeWvYT.png',
+  2: 'https://i.imgur.com/MdgNqz9.png',
+  3: 'https://i.imgur.com/V7jD0eS.png'
 };
 
 const DATA_FILE = "commands/moderation/data/datauser.json";
