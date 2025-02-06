@@ -1,8 +1,4 @@
 const { SlashCommandBuilder } = require('discord.js');
-const fetch = require('node-fetch');
-
-const API_KEY = "bc6a1dadaf0843518b5f6f20cfc4761c";
-const API_BASE_URL = "https://api.spoonacular.com/recipes";
 
 module.exports = {
   data: new SlashCommandBuilder()
@@ -21,9 +17,13 @@ module.exports = {
     }
 
     try {
-      const response = await fetch(
-        `${API_BASE_URL}/complexSearch?query=${encodeURIComponent(query)}&apiKey=${API_KEY}`
-      );
+      // Dynamic import để dùng node-fetch
+      const fetch = (await import('node-fetch')).default;
+
+      const API_KEY = "bc6a1dadaf0843518b5f6f20cfc4761c";
+      const API_BASE_URL = "https://api.spoonacular.com/recipes";
+
+      const response = await fetch(`${API_BASE_URL}/complexSearch?query=${encodeURIComponent(query)}&apiKey=${API_KEY}`);
       const data = await response.json();
 
       if (!data.results || data.results.length === 0) {
