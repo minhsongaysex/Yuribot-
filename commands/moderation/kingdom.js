@@ -1,5 +1,6 @@
 const { SlashCommandBuilder, EmbedBuilder } = require('discord.js');
 const storage = require('node-persist');
+const fs = require('fs');
 
 // Khởi tạo lưu trữ dữ liệu cho Kingdom
 (async () => {
@@ -12,10 +13,12 @@ const LEVEL_REQUIREMENTS = {
 };
 
 const KINGDOM_IMAGES = {
-  1: 'https://i.imgur.com/lv1.png', // Hình LV1
-  2: 'https://i.imgur.com/lv2.png', // Hình LV2
-  3: 'https://i.imgur.com/lv3.png'  // Hình LV3 (Kịch)
+  1: 'https://i.imgur.com/lv1.png',
+  2: 'https://i.imgur.com/lv2.png',
+  3: 'https://i.imgur.com/lv3.png'
 };
+
+const DATA_FILE = "commands/moderation/data/datauser.json";
 
 module.exports = {
   data: new SlashCommandBuilder()
@@ -40,10 +43,35 @@ module.exports = {
   async execute(interaction) {
     const subcommand = interaction.options.getSubcommand();
 
-    // 🌑 Xử lý đóng góp Soul cho Kingdom
     if (subcommand === 'darkkingdom') {
       const userId = interaction.user.id;
       const contributeSouls = interaction.options.getInteger('contribute');
+
+      // Đọc dữ liệu người dùng
+      let userData;
+      try {
+        const data = fs.readFileSync(DATA_FILE, 'utf8');
+        userData = JSON.parse(data);
+      } catch (err) {
+        console.error("Lỗi khi đọc file datauser.json:", err);
+        return interaction.reply("Có lỗi xảy ra khi xử lý yêu cầu của bạn.");
+      }
+
+      // Kiểm tra số soul
+      if (!userData[userId] || userData[userId] < contributeSouls) {
+        return interaction.reply("Bạn không đủ Soul để đóng góp.");
+      }
+
+      // Trừ soul của người dùng
+      userData[userId] -= contributeSouls;
+
+      // Ghi lại dữ liệu người dùng
+      try {
+        fs.writeFileSync(DATA_FILE, JSON.stringify(userData, null, 2));
+      } catch (err) {
+        console.error("Lỗi khi ghi file datauser.json:", err);
+        return interaction.reply("Có lỗi xảy ra khi xử lý yêu cầu của bạn.");
+      }
 
       let kingdomData = (await storage.getItem('kingdomData')) || {
         level: 1,
@@ -62,33 +90,30 @@ module.exports = {
       if (currentLevel < 3 && kingdomData.totalSouls >= LEVEL_REQUIREMENTS[currentLevel + 1]) {
         kingdomData.level++;
         kingdomData.totalSouls -= LEVEL_REQUIREMENTS[currentLevel + 1];
-        levelUpMessage = `🎉 Vương quốc đã được nâng cấp lên cấp **${kingdomData.level}**!`;
+        levelUpMessage = ` Vương quốc đã được nâng cấp lên cấp **${kingdomData.level}**!`;
 
         if (kingdomData.level === 3) {
-          levelUpMessage += '\n💀 **Dark Kingdom đã đạt cấp Kịch!**';
+          levelUpMessage += '\n **Dark Kingdom đã đạt cấp Kịch!**';
         }
       }
 
       // Lưu dữ liệu
       await storage.setItem('kingdomData', kingdomData);
 
-      // Tạo Embed trả về
+      // Tạo Embed
       const embed = new EmbedBuilder()
         .setColor(0x5d3fd3)
         .setTitle('⚔️ **Dark Kingdom Status** ⚔️')
-        .setDescription(`🔮 Vương quốc hiện đang ở cấp **${kingdomData.level}**`)
+        .setDescription(` Vương quốc hiện đang ở cấp **${kingdomData.level}**`)
         .addFields(
           { name: '✨ Tổng số Soul:', value: `${kingdomData.totalSouls} Soul`, inline: true },
-          { name: '🔑 Đóng góp của bạn:', value: `${kingdomData.contributors[userId]} Soul`, inline: true }
+          { name: ' Đóng góp của bạn:', value: `${kingdomData.contributors[userId]} Soul`, inline: true }
         )
         .setImage(KINGDOM_IMAGES[kingdomData.level])
-        .setFooter({ text: levelUpMessage ? levelUpMessage : 'Tiếp tục đóng góp để nâng cấp vương quốc!' });
+        .setFooter({ text: levelUpMessage || 'Tiếp tục đóng góp để nâng cấp vương quốc!' });
 
       await interaction.reply({ embeds: [embed] });
-    }
-
-    // 🏰 Xử lý kiểm tra trạng thái vương quốc
-    else if (subcommand === 'kingdomstatus') {
+    } else if (subcommand === 'kingdomstatus') {
       let kingdomData = (await storage.getItem('kingdomData')) || {
         level: 1,
         totalSouls: 0,
@@ -98,10 +123,10 @@ module.exports = {
       const embed = new EmbedBuilder()
         .setColor(0x5d3fd3)
         .setTitle('⚔️ **Dark Kingdom Status** ⚔️')
-        .setDescription(`🔮 Vương quốc hiện đang ở cấp **${kingdomData.level}**`)
+        .setDescription(` Vương quốc hiện đang ở cấp **${kingdomData.level}**`)
         .addFields(
           { name: '✨ Tổng số Soul:', value: `${kingdomData.totalSouls} Soul`, inline: true },
-          { name: '🛡️ Thành viên đóng góp:', value: formatContributors(kingdomData.contributors), inline: false }
+          { name: '️ Thành viên đóng góp:', value: formatContributors(kingdomData.contributors), inline: false }
         )
         .setImage(KINGDOM_IMAGES[kingdomData.level])
         .setFooter({ text: 'Hãy tiếp tục xây dựng vương quốc!' });
@@ -111,9 +136,6 @@ module.exports = {
   }
 };
 
-/**
- * Hàm format danh sách đóng góp của thành viên
- */
 function formatContributors(contributors) {
   if (Object.keys(contributors).length === 0) return 'Chưa có đóng góp nào.';
   return Object.entries(contributors)
