@@ -38,6 +38,11 @@ module.exports = {
       subcommand.setName('repay')
       .setDescription('Trả nợ ngân hàng')
       .addIntegerOption(option => option.setName('amount').setDescription('Số tiền muốn trả').setRequired(true))
+    )
+    .addSubcommand(subcommand => 
+      subcommand.setName('setmoney')
+      .setDescription('Cộng tiền vào tài khoản')
+      .addIntegerOption(option => option.setName('amount').setDescription('Số tiền muốn thêm').setRequired(true))
     ),
 
   async execute(interaction) {
@@ -118,6 +123,13 @@ module.exports = {
         user.debt -= amount;
         await user.save();
         return interaction.reply(`✅ Bạn đã trả **${amount}💵** nợ ngân hàng!`);
+      }
+      
+      case 'setmoney': {
+        const amount = interaction.options.getInteger('amount');
+        user.cash += amount;
+        await user.save();
+        return interaction.reply(`✅ Bạn đã nhận **${amount}💵** vào tài khoản!`);
       }
     }
   }
