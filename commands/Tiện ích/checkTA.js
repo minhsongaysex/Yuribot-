@@ -3,7 +3,7 @@ const fetch = (...args) => import('node-fetch').then(({ default: fetch }) => fet
 
 module.exports = {
   data: new SlashCommandBuilder()
-    .setName('exchange-rate')
+    .setName('ctienao')
     .setDescription('Kiểm tra giá Bitcoin hoặc Ethereum bằng tiền Việt Nam.')
     .addStringOption(option =>
       option.setName('currency')
