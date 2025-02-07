@@ -142,3 +142,4 @@ function formatContributors(contributors) {
     .map(([userId, souls]) => `<@${userId}>: ${souls} Soul`)
     .join('\n');
 }
+// npm i node-persist
