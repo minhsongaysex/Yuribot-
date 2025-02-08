@@ -52,7 +52,7 @@
       "name": "Ma pháp Vô Niệm",
       "type": "Silent Magic",
       "price": 5000,
-      "damage": 250
+      "damage": 2500
     },
     {
       "name": "Ma pháp Long Tộc",
@@ -64,7 +64,13 @@
       "name": "Ma pháp Thần Cấp",
       "type": "God-Class Magic",
       "price": 10000,
-      "damage": 1000
-    }
+      "damage": 10000
+    },
+    {
+      "name": "Trỗi Dậy",
+      "type": "God-Class Magic",
+      "price": 5000000,
+      "damage": 100000
+}
   ]
 }
