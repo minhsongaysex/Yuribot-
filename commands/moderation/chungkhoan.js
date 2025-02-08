@@ -5,6 +5,7 @@ const path = require('path');
 
 const dataFilePath = path.join(__dirname, '../moderation/data/datauser.json');
 const transactionFee = 0.02; // 2% phí duy trì khi lỗ
+const coinRateAPI = 'https://huu-tri-api.onrender.com/coinrate';
 
 function getUserData(userId) {
   const data = JSON.parse(fs.readFileSync(dataFilePath, 'utf8'));
@@ -40,6 +41,10 @@ module.exports = {
     .addSubcommand(subcommand => 
       subcommand.setName('portfolio')
       .setDescription('Xem danh mục đầu tư của bạn')
+    )
+    .addSubcommand(subcommand => 
+      subcommand.setName('rate')
+      .setDescription('Xem tỷ giá Soul hiện tại')
     ),
 
   async execute(interaction) {
@@ -107,6 +112,17 @@ module.exports = {
         }
         
         return interaction.reply(message);
+      }
+      
+      case 'rate': {
+        try {
+          const response = await axios.get(coinRateAPI);
+          const { rate, exchangerate, lastupdated } = response.data;
+          return interaction.reply(`💰 Tỷ giá Soul hiện tại: ${rate}\n📈 Xu hướng: ${exchangerate}\n🕒 Cập nhật lần cuối: ${lastupdated}`);
+        } catch (error) {
+          console.error(error);
+          return interaction.reply('⚠️ Không thể lấy dữ liệu tỷ giá Soul. Vui lòng thử lại sau.');
+        }
       }
     }
   }
