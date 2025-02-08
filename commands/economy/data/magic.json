@@ -1,1 +1,60 @@
+{
+  "magics": [
+    {
+      "name": "Ma pháp Lửa",
+      "type": "Fire Magic",
+      "price": 500
+    },
+    {
+      "name": "Ma pháp Nước",
+      "type": "Water Magic",
+      "price": 500
+    },
+    {
+      "name": "Ma pháp Gió",
+      "type": "Wind Magic",
+      "price": 500
+    },
+    {
+      "name": "Ma pháp Đất",
+      "type": "Earth Magic",
+      "price": 500
+    },
+    {
+      "name": "Ma pháp Chữa Trị",
+      "type": "Healing Magic",
+      "price": 1000
+    },
+    {
+      "name": "Ma pháp Bảo Hộ",
+      "type": "Barrier Magic",
+      "price": 1200
+    },
+    {
+      "name": "Ma pháp Không Gian",
+      "type": "Space-Time Magic",
+      "price": 3000
+    },
+    {
+      "name": "Ma pháp Triệu hồi",
+      "type": "Summoning Magic",
+      "price": 2500
+    },
+    {
+      "name": "Ma pháp Vô Niệm",
+      "type": "Silent Magic",
+      "price": 5000
+    },
+    {
+      "name": "Ma pháp Long Tộc",
+      "type": "Dragon Magic",
+      "price": 7000
+    },
+    {
+      "name": "Ma pháp Thần Cấp",
+      "type": "God-Class Magic",
+      "price": 10000
+    }
+  ]
+}
 
