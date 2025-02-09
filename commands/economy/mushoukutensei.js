@@ -2,10 +2,10 @@ const { SlashCommandBuilder, ActionRowBuilder, ButtonBuilder, ButtonStyle, Embed
 const fs = require('fs');
 const path = require('path');
 
-const dataUserPath = path.join(__dirname, '/data/datauser.json');
-const monsterPath = path.join(__dirname, '/data/data.json');
-const magicPath = path.join(__dirname, '/data/magic.json');
-const itemPath = path.join(__dirname, '/data/item.json');
+const dataUserPath = path.join(__dirname, '../data/datauser.json');
+const monsterPath = path.join(__dirname, '../data/monsters.json');
+const magicPath = path.join(__dirname, '../data/magic.json');
+const itemPath = path.join(__dirname, '../data/item.json');
 
 function getUserData(userId) {
   const data = JSON.parse(fs.readFileSync(dataUserPath, 'utf8'));
@@ -156,7 +156,29 @@ module.exports = {
       );
 
       const row = new ActionRowBuilder().addComponents(buttons);
-      return interaction.reply({ embeds: [embed], components: [row] });
+      await interaction.reply({ embeds: [embed], components: [row] });
+
+      const collector = interaction.channel.createMessageComponentCollector({ componentType: 'BUTTON', time: 60000 });
+
+      collector.on('collect', async i => {
+        if (i.customId.startsWith('buy_magic_')) {
+          const [_, buyerId, spellName, spellPrice] = i.customId.split('_');
+          if (buyerId !== userId) return;
+
+          if (userData.soul < parseInt(spellPrice)) {
+            return i.reply({ content: `❌ Bạn không đủ Soul để mua **${spellName}**!`, ephemeral: true });
+          }
+
+          userData.soul -= parseInt(spellPrice);
+          userData.magic.push(spellName);
+          saveUserData(userId, userData);
+          return i.reply({ content: `✅ Bạn đã mua thành công **${spellName}**! Số dư còn lại: ${userData.soul} Soul.`, ephemeral: true });
+        }
+      });
+
+      collector.on('end', collected => {
+        if (collected.size === 0) interaction.followUp('⏰ Thời gian mua hàng đã kết thúc.');
+      });
     }
 
     if (subcommand === 'muado') {
@@ -174,11 +196,29 @@ module.exports = {
       );
 
       const row = new ActionRowBuilder().addComponents(buttons);
-      return interaction.reply({ embeds: [embed], components: [row] });
+      await interaction.reply({ embeds: [embed], components: [row] });
+
+      const collector = interaction.channel.createMessageComponentCollector({ componentType: 'BUTTON', time: 60000 });
+
+      collector.on('collect', async i => {
+        if (i.customId.startsWith('buy_item_')) {
+          const [_, buyerId, itemName, itemPrice] = i.customId.split('_');
+          if (buyerId !== userId) return;
+
+          if (userData.soul < parseInt(itemPrice)) {
+            return i.reply({ content: `❌ Bạn không đủ Soul để mua **${itemName}**!`, ephemeral: true });
+          }
+
+          userData.soul -= parseInt(itemPrice);
+          userData.weapons.push(itemName);
+          saveUserData(userId, userData);
+          return i.reply({ content: `✅ Bạn đã mua thành công **${itemName}**! Số dư còn lại: ${userData.soul} Soul.`, ephemeral: true });
+        }
+      });
+
+      collector.on('end', collected => {
+        if (collected.size === 0) interaction.followUp('⏰ Thời gian mua hàng đã kết thúc.');
+      });
     }
   }
 };
-
-
-
-
