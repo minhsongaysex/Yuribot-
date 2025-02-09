@@ -146,13 +146,15 @@ module.exports = {
       const collector = interaction.channel.createMessageComponentCollector({ componentType: 'BUTTON', time: 60000 });
 
       collector.on('collect', async i => {
+        if (i.user.id !== userId) return i.reply({ content: '⛔ Bạn không thể thực hiện hành động này!', ephemeral: true });
+
         if (i.customId.startsWith('attack_normal')) {
           const damage = getMaxWeaponDamage(userData.weapons) || 10;
           randomMonster.currentHp -= damage;
           if (randomMonster.currentHp <= 0) {
-            return i.reply(`🎉 Bạn đã tiêu diệt **${randomMonster.name}**!`);
+            return i.update({ content: `🎉 Bạn đã tiêu diệt **${randomMonster.name}**!`, components: [] });
           }
-          return i.reply(`🗡️ Bạn đã gây ${damage} sát thương. Quái còn lại **${randomMonster.currentHp}** HP.`);
+          return i.update({ content: `🗡️ Bạn đã gây ${damage} sát thương. Quái còn lại **${randomMonster.currentHp}** HP.`, components: [row] });
         }
 
         if (i.customId.startsWith('attack_magic')) {
@@ -161,9 +163,9 @@ module.exports = {
           if (magicData) {
             randomMonster.currentHp -= magicData.damage;
             if (randomMonster.currentHp <= 0) {
-              return i.reply(`🎉 Bạn đã tiêu diệt **${randomMonster.name}** bằng ma pháp **${spellName}**!`);
+              return i.update({ content: `🎉 Bạn đã tiêu diệt **${randomMonster.name}** bằng ma pháp **${spellName}**!`, components: [] });
             }
-            return i.reply(`✨ Bạn đã gây ${magicData.damage} sát thương bằng ma pháp **${spellName}**. Quái còn lại **${randomMonster.currentHp}** HP.`);
+            return i.update({ content: `✨ Bạn đã gây ${magicData.damage} sát thương bằng ma pháp **${spellName}**. Quái còn lại **${randomMonster.currentHp}** HP.`, components: [row] });
           }
         }
       });
@@ -194,17 +196,23 @@ module.exports = {
 
       collector.on('collect', async i => {
         if (i.customId.startsWith('buy_magic_')) {
-          const [_, buyerId, spellName, spellPrice] = i.customId.split('_');
-          if (buyerId !== userId) return;
+          const parts = i.customId.split('_');
+          if (parts.length < 4) return i.reply({ content: '❌ Lỗi: ID không hợp lệ.', ephemeral: true });
 
-          if (userData.soul < parseInt(spellPrice)) {
-            return i.reply({ content: `❌ Bạn không đủ Soul để mua **${spellName}**!`, ephemeral: true });
+          const [_, buyerId, spellName, spellPrice] = parts;
+          const price = Number(spellPrice);
+
+          if (isNaN(price)) return i.reply({ content: '❌ Lỗi: Giá trị không hợp lệ.', ephemeral: true });
+          if (i.user.id !== buyerId) return i.reply({ content: '⛔ Bạn không thể thực hiện hành động này!', ephemeral: true });
+
+          if (userData.soul < price) {
+            return i.update({ content: `❌ Bạn không đủ Soul để mua **${spellName}**!`, components: [] });
           }
 
-          userData.soul -= parseInt(spellPrice);
+          userData.soul -= price;
           userData.magic.push(spellName);
           saveUserData(userId, userData);
-          return i.reply({ content: `✅ Bạn đã mua thành công **${spellName}**! Số dư còn lại: ${userData.soul} Soul.`, ephemeral: true });
+          return i.update({ content: `✅ Bạn đã mua thành công **${spellName}**! Số dư còn lại: ${userData.soul} Soul.`, components: [] });
         }
       });
 
@@ -234,17 +242,23 @@ module.exports = {
 
       collector.on('collect', async i => {
         if (i.customId.startsWith('buy_item_')) {
-          const [_, buyerId, itemName, itemPrice] = i.customId.split('_');
-          if (buyerId !== userId) return;
+          const parts = i.customId.split('_');
+          if (parts.length < 4) return i.reply({ content: '❌ Lỗi: ID không hợp lệ.', ephemeral: true });
 
-          if (userData.soul < parseInt(itemPrice)) {
-            return i.reply({ content: `❌ Bạn không đủ Soul để mua **${itemName}**!`, ephemeral: true });
+          const [_, buyerId, itemName, itemPrice] = parts;
+          const price = Number(itemPrice);
+
+          if (isNaN(price)) return i.reply({ content: '❌ Lỗi: Giá trị không hợp lệ.', ephemeral: true });
+          if (i.user.id !== buyerId) return i.reply({ content: '⛔ Bạn không thể thực hiện hành động này!', ephemeral: true });
+
+          if (userData.soul < price) {
+            return i.update({ content: `❌ Bạn không đủ Soul để mua **${itemName}**!`, components: [] });
           }
 
-          userData.soul -= parseInt(itemPrice);
+          userData.soul -= price;
           userData.weapons.push(itemName);
           saveUserData(userId, userData);
-          return i.reply({ content: `✅ Bạn đã mua thành công **${itemName}**! Số dư còn lại: ${userData.soul} Soul.`, ephemeral: true });
+          return i.update({ content: `✅ Bạn đã mua thành công **${itemName}**! Số dư còn lại: ${userData.soul} Soul.`, components: [] });
         }
       });
 
