@@ -2,10 +2,10 @@ const { SlashCommandBuilder, ActionRowBuilder, ButtonBuilder, ButtonStyle, Embed
 const fs = require('fs');
 const path = require('path');
 
-const dataUserPath = path.join(__dirname, '../data/datauser.json');
-const monsterPath = path.join(__dirname, '../data/monsters.json');
-const magicPath = path.join(__dirname, '../data/magic.json');
-const itemPath = path.join(__dirname, '../data/item.json');
+const dataUserPath = path.join(__dirname, '/data/datauser.json');
+const monsterPath = path.join(__dirname, '/data/data.json');
+const magicPath = path.join(__dirname, '/data/magic.json');
+const itemPath = path.join(__dirname, '/data/item.json');
 
 function getUserData(userId) {
   const data = JSON.parse(fs.readFileSync(dataUserPath, 'utf8'));
@@ -22,13 +22,16 @@ function saveUserData(userId, userData) {
   fs.writeFileSync(dataUserPath, JSON.stringify(data, null, 2));
 }
 
-function levelUp(userData) {
-  const expNeeded = userData.level * 500;
-  if (userData.exp >= expNeeded) {
-    userData.exp -= expNeeded;
-    userData.level += 1;
-    userData.hp = 100 + userData.level * 20;
+function getMaxWeaponDamage(weapons) {
+  const items = JSON.parse(fs.readFileSync(itemPath, 'utf8')).weapons;
+  let maxDamage = 0;
+  for (const weapon of weapons) {
+    const item = items.find(i => i.name === weapon);
+    if (item && item.damage > maxDamage) {
+      maxDamage = item.damage;
+    }
   }
+  return maxDamage;
 }
 
 module.exports = {
@@ -118,7 +121,7 @@ module.exports = {
 
     if (subcommand === 'timquai') {
       const monsters = JSON.parse(fs.readFileSync(monsterPath, 'utf8')).monsters;
-      const randomMonster = monsters[Math.floor(Math.random() * monsters.length)];
+      const randomMonster = { ...monsters[Math.floor(Math.random() * monsters.length)] };
       randomMonster.currentHp = randomMonster.hp;
 
       const embed = new EmbedBuilder()
@@ -138,7 +141,36 @@ module.exports = {
       );
 
       const row = new ActionRowBuilder().addComponents([attackButton, ...magicButtons.slice(0, 4)]);
-      return interaction.reply({ embeds: [embed], components: [row] });
+      await interaction.reply({ embeds: [embed], components: [row] });
+
+      const collector = interaction.channel.createMessageComponentCollector({ componentType: 'BUTTON', time: 60000 });
+
+      collector.on('collect', async i => {
+        if (i.customId.startsWith('attack_normal')) {
+          const damage = getMaxWeaponDamage(userData.weapons) || 10;
+          randomMonster.currentHp -= damage;
+          if (randomMonster.currentHp <= 0) {
+            return i.reply(`🎉 Bạn đã tiêu diệt **${randomMonster.name}**!`);
+          }
+          return i.reply(`🗡️ Bạn đã gây ${damage} sát thương. Quái còn lại **${randomMonster.currentHp}** HP.`);
+        }
+
+        if (i.customId.startsWith('attack_magic')) {
+          const spellName = i.customId.split('_')[3];
+          const magicData = JSON.parse(fs.readFileSync(magicPath, 'utf8')).magics.find(m => m.name === spellName);
+          if (magicData) {
+            randomMonster.currentHp -= magicData.damage;
+            if (randomMonster.currentHp <= 0) {
+              return i.reply(`🎉 Bạn đã tiêu diệt **${randomMonster.name}** bằng ma pháp **${spellName}**!`);
+            }
+            return i.reply(`✨ Bạn đã gây ${magicData.damage} sát thương bằng ma pháp **${spellName}**. Quái còn lại **${randomMonster.currentHp}** HP.`);
+          }
+        }
+      });
+
+      collector.on('end', collected => {
+        if (collected.size === 0) interaction.followUp('⏰ Thời gian chiến đấu đã kết thúc.');
+      });
     }
 
     if (subcommand === 'muaphap') {
