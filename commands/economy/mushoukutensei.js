@@ -2,10 +2,10 @@ const { SlashCommandBuilder, ActionRowBuilder, ButtonBuilder, ButtonStyle, Embed
 const fs = require('fs');
 const path = require('path');
 
-const dataUserPath = path.join(__dirname, '../commands/economy/data/datauser.json');
-const monsterPath = path.join(__dirname, '../data/data.json');
-const magicPath = path.join(__dirname, '../data/magic.json');
-const itemPath = path.join(__dirname, '../data/item.json');
+const dataUserPath = path.join(__dirname, 'data/datauser.json');
+const monsterPath = path.join(__dirname, 'data/data.json');
+const magicPath = path.join(__dirname, 'data/magic.json');
+const itemPath = path.join(__dirname, 'data/item.json');
 
 function getUserData(userId) {
   const data = JSON.parse(fs.readFileSync(dataUserPath, 'utf8'));
@@ -135,5 +135,6 @@ module.exports = {
   }
 };
   
+
 
 
