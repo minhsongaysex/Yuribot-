@@ -1,0 +1,33 @@
+{
+  "1306552024568959016": {
+    "hocThem": {
+      "test": {
+        "buoiHoc": [
+          {
+            "ngay": "08/03/2025",
+            "gia": 100000,
+            "nghi": true
+          }
+        ],
+        "giaMacDinh": 100000
+      },
+      "Tiếng Anh-chuyên": {
+        "buoiHoc": [
+          {
+            "ngay": "02/03/2025",
+            "gia": 100000,
+            "nghi": false
+          },
+          {
+            "ngay": "08/03/2025",
+            "gia": 100000,
+            "nghi": false
+          }
+        ],
+        "giaMacDinh": 100000,
+        "tongTienMon": 200000
+      }
+    },
+    "tongTien": 200000
+  }
+}
