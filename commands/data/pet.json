@@ -1,0 +1,51 @@
+{
+  "1306552024568959016": {
+    "money": 7498900,
+    "currentPet": "Darkrai",
+    "pets": {
+      "Darkrai": {
+        "stats": {
+          "strength": 1000,
+          "defense": 120
+        },
+        "image": "https://example.com/darkrai.png"
+      },
+      "Squirtle": {
+        "stats": {
+          "strength": 40,
+          "defense": 60
+        },
+        "image": "https://example.com/squirtle.png"
+      },
+      "Bulbasaur": {
+        "price": 600,
+        "stats": {
+          "strength": 45,
+          "defense": 50
+        },
+        "image": "https://example.com/bulbasaur.png"
+      },
+      "Charmander": {
+        "price": 500,
+        "stats": {
+          "strength": 50,
+          "defense": 40
+        },
+        "image": "https://example.com/charmander.png"
+      }
+    }
+  },
+  "1331234978796797998": {
+    "money": 500,
+    "currentPet": "Bulbasaur",
+    "pets": {
+      "Bulbasaur": {
+        "stats": {
+          "strength": 45,
+          "defense": 50
+        },
+        "image": "https://example.com/bulbasaur.png"
+      }
+    }
+  }
+}
