@@ -1,0 +1,22 @@
+{
+  "Charmander": {
+      "price": 500,
+      "stats": { "strength": 50, "defense": 40 },
+      "image": "https://example.com/charmander.png"
+  },
+  "Bulbasaur": {
+      "price": 600,
+      "stats": { "strength": 45, "defense": 50 },
+      "image": "https://example.com/bulbasaur.png"
+  },
+  "Squirtle": {
+      "price": 700,
+      "stats": { "strength": 40, "defense": 60 },
+      "image": "https://example.com/squirtle.png"
+  },
+  "Darkrai": {
+      "price": 1000,
+      "stats": { "strength": 1000, "defense": 120 },
+      "image": "https://example.com/darkrai.png"
+  }
+}
