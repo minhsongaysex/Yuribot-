@@ -74,7 +74,7 @@ git clone https://github.com/itz-princeyt336/Discord-Bot.git
 ```bash
 npm install
 ```
-To start your bot 
+BƯỚC CUỐI GÕ NHƯ VẬY RỒI RUN🏃🏻
 
 ```js
 node index.js
