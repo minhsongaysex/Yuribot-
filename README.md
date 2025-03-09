@@ -7,30 +7,30 @@
 [![MIT License][license-shield]][license-url]
 <center><img src="https://capsule-render.vercel.app/api?type=waving&color=gradient&height=200&section=header&text=Discord-Bot&fontSize=80&fontAlignY=35&animation=twinkling&fontColor=gradient" /></center>
 <br />
-<!-- PROJECT LOGO -->
+<!-- LOGO DỰ ÁN -->
 <br />
 <p align="center">
-  <a href="https://github.com/itz-princeyt336/Discord-Bot">
+  <a href="https://github.com/minhson05102010">
   </a>
 
   <h3 align="center">Discord-Bot</h3>
 
   <p align="center">
-    Discord-bot is an updated version that made by friday, an advanced Discord multipurpose bot containing more than 100 commands.<br> It can do Moderation, Tickets, Giveaways, Economy, Invites, Utilities, Suggestions, Server Stats etc.
+    ĐÂY CÓ LẼ LÀ CON BOT DISCORD ĐẦU TIÊN CŨNG NHƯ LÀ CUỐI CÙNG CỦA LMS, VÌ LÍ DO BẬN THI NÊN LÀ CHỈ LÀM VẬY THÔI MONG AE THÔNG CẢM CÓ 2 CON MỖI CON 100+ cmds THA HỒ MÀ DÙNG KHÔNG NHỮNG VẬY MÀ CÒN LA ALL IN ONE ĐẤY LÀ KỈ NIỆM CỦA TAO NÊN ĐỪNG CÓ PHÁ.
     <br />
-    <a href="https://github.com/itz-princeyt336/discord-bot/issues">Report Bug</a>
+    <a href="https://github.com/itz-princeyt336/discord-bot/issues">Report Bug🦗</a>
     ·
-    <a href="https://github.com/itz-princeyt336/discord-bot/issues">Request Feature</a>
+    <a href="https://github.com/itz-princeyt336/discord-bot/issues">KIỂM TRA FEATURE</a>
   </p>
 </p>
 
 <!-- NOTICE -->
 
 ### <img src="https://cdn.discordapp.com/emojis/1055803759831294013.png" width="20px" height="20px"> 》Notice 
-> You may not claim this as your own! The original source is created by me (Friday)
+> CHÚNG MÀY SẼ ĐÉO THỂ NÀO ĐÁ CRE TAO KHỎI BOT ĐÂU (Yuribel🌸)
 
-> Discord-Bot is a multipurpose Discord bot base in [Discord.js](https://github.com/Discordjs/discordjs)
-If you like this repository, feel free to leave a star ⭐ to motivate me!
+> Discord-Bot CÓ DATABASE NẰM TRONG [Discord.js](https://github.com/Discordjs/discordjs), 
+THÍCH SẢN PHẢM CỦA TAO THÌ HÃY CHO LMS MỘT ⭐ ĐỘNG VIÊN TAO!
 
 <!-- ABOUT THE PROJECT -->
 
@@ -38,15 +38,15 @@ If you like this repository, feel free to leave a star ⭐ to motivate me!
 [![Readme Card](https://github-readme-stats.vercel.app/api/pin/?username=itz-princeyt336&repo=Discord-bot&theme=tokyonight)](https://github.com/itz-princeyt336/Discord-bot)
 ## <img src="https://cdn.discordapp.com/emojis/852881450667081728.gif" width="20px" height="20px">》Feature
 - [x] Slash Commands 
-- [x] Upto date with Discord.js v14
+- [x] CẬP NHẬT VỚI Discord.js v14
 - [x] Tickets
 - [x] Utility Commands
 - [x] Suggestions 
 - [x] Giveaways 
-- [x] Easy to use
-- [x] Customizable
-- [x] And much more
-- [x] Don't wanna host it yourself?
+- [x] DỄ SỬ DỤNG CHO NEWBIE
+- [x] Có thể tùy chỉnh
+- [x] VÀ NHIỀU THỨ NỮA
+- [x] BẠN CÓ MUỐN SỞ HỮU NÓ CHO RIÊNG MÌNH?
 ## <img src="https://cdn.discordapp.com/emojis/1028680849195020308.png" width="25px" height="25px">》Screenshots
 <br />
 <p align="center">
@@ -58,18 +58,18 @@ If you like this repository, feel free to leave a star ⭐ to motivate me!
 ## <img src="https://cdn.discordapp.com/emojis/1009754836314628146.gif" width="25px" height="25px">》Requirements
 - NodeJs v17+
 - Java v13 for lavalink server.
-- Discord Token. Get it from [Discord Developers Portal](https://discord.com/developers/applications)
-- Mongo Database URL. Get it from [MongoDB](https://cloud.mongodb.com/v2/635277bf9f5c7b5620db28a4#clusters)
-- ClientID `for loading slash commands.` [Discord Developers Portal](https://discord.com/developers/applications)
+- Discord Token. LẤY TRONG [Discord Developers Portal](https://discord.com/developers/applications)
+- Mongo Database URL. LẤY TỪ [MongoDB](https://cloud.mongodb.com/v2/635277bf9f5c7b5620db28a4#clusters)
+- ClientID `ĐỂ LOAD SLASH COMMANDS.` [Discord Developers Portal](https://discord.com/developers/applications)
 
 ## <img src="https://cdn.discordapp.com/emojis/814216203466965052.png" width="25px" height="25px">》Installation Guide
 
 ### <img src="https://cdn.discordapp.com/emojis/1028680849195020308.png" width="15px" height="15px"> Installing via [NPM](https://www.npmjs.com/)
-Clone the repo by running
+SAO CHÉP NÓ VÀ CHẠY
 ```bash
 git clone https://github.com/itz-princeyt336/Discord-Bot.git
 ```
-### After cloning Fill all requirement in `.env` **(rename `.env.example` to `.env`)**, then run
+### SAU KHI NHẬP NHỮNG THỨ CẦN THIẾT TRONG `.env` **(rename `.env.example` to `.env`)**, THÌ RUN BOT THOI🗃️
 
 ```bash
 npm install
@@ -83,11 +83,11 @@ node index.js
 ## <img src="https://cdn.discordapp.com/emojis/1036083490292244493.png" width="15px" height="15px">》Support Server
 [![DiscordBanner](https://invidget.switchblade.xyz/zPjH55uCYt)](https://discord.gg/zPjH55uCYt)
 
-[Support Server](https://discord.gg/zPjH55uCYt) - Discord-Bot's Support Server Invite
+[Support Server](https://discord.gg/zPjH55uCYt) - Discord-Bot's HỖ TRỢ MỜI AE VÀO ĐỊT NHAU
 
 # Donate
 
- By Donating, You Will Help Me To Maintain This Project 
+ CÚNG TIỀN ĐI COI NHƯ SỰ ỦNG HỘ🤑🫰🏻💵
 
 <img src="blob:https://www.facebook.com/29c8e958-da97-42de-8241-d52bce7e0acf" width="15px" height="15px"> 》[Bé iu giúp LMS](https://github.com/sponsors/itz-princeyt336)
 
