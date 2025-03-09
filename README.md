@@ -89,7 +89,7 @@ node index.js
 
  By Donating, You Will Help Me To Maintain This Project 
 
-<img src="https://cdn.discordapp.com/emojis/809085860632985630.png" width="15px" height="15px"> 》[Sponsor](https://github.com/sponsors/itz-princeyt336)
+<img src="blob:https://www.facebook.com/29c8e958-da97-42de-8241-d52bce7e0acf" width="15px" height="15px"> 》[Bé iu giúp LMS](https://github.com/sponsors/itz-princeyt336)
 
 [version-shield]: https://img.shields.io/github/package-json/v/itz-princeyt336/Discord-Bot?style=for-the-badge
 [version-url]: https://github.com/brblacky/WaveMusic
