@@ -1,0 +1,47 @@
+{
+  "1306552024568959016": {
+    "name": "lamminhson_92755",
+    "ID": "1306552024568959016",
+    "shield": 3,
+    "coins": 36223,
+    "Island": {
+      "level": 1,
+      "coinsLV": 200,
+      "data": {
+        "tower": 0,
+        "tree": 0,
+        "pool": 0,
+        "pet": 1
+      }
+    },
+    "spin": 19,
+    "dragons": [
+      "Rồng Nước",
+      "Rồng Lửa"
+    ],
+    "timeRegister": "20:44:24 16/3/2025",
+    "currentDragon": "Rồng Lửa"
+  },
+  "1335163724138545182": {
+    "name": "huuminh012",
+    "ID": "1335163724138545182",
+    "shield": 3,
+    "coins": 1999000,
+    "Island": {
+      "level": 1,
+      "coinsLV": 200,
+      "data": {
+        "tower": 0,
+        "tree": 0,
+        "pool": 0,
+        "pet": 0
+      }
+    },
+    "spin": 20,
+    "dragons": [
+      "Rồng Đất"
+    ],
+    "timeRegister": "22:36:35 16/3/2025",
+    "currentDragon": "Rồng Đất"
+  }
+}
