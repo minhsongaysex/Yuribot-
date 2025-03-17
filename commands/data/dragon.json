@@ -1,0 +1,37 @@
+{
+  "dragons": [
+    {
+      "name": "Rồng Đất",
+      "emoji": "🐲",
+      "price": 1000,
+      "stats": {
+        "attack": 150,
+        "hp": 300,
+        "healing": 0
+      },
+      "description": "Rồng mạnh mẽ có sức tấn công cao"
+    },
+    {
+      "name": "Rồng Nước",
+      "emoji": "🌊",
+      "price": 1200,
+      "stats": {
+        "attack": 120,
+        "hp": 350,
+        "healing": 20
+      },
+      "description": "Rồng có khả năng hồi máu"
+    },
+    {
+      "name": "Rồng Lửa",
+      "emoji": "🔥",
+      "price": 1500,
+      "stats": {
+        "attack": 200,
+        "hp": 250,
+        "healing": 0
+      },
+      "description": "Rồng có sức tấn công cực cao"
+    }
+  ]
+}
