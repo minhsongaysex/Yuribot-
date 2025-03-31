@@ -113,7 +113,7 @@ module.exports = {
                 }
                 userData[userId].inventory.push(selectedItem);
         
-                // Trừ tiền
+               
                 moneyData[userId].money -= selectedItem.price;
                 fs.writeFileSync(moneyFile, JSON.stringify(moneyData, null, 2));
                 fs.writeFileSync(userFile, JSON.stringify(userData, null, 2));
@@ -132,8 +132,8 @@ module.exports = {
 
 ///////////////IM DARKNESS👻/////////////////
 
-        // Đào tài nguyên
-// Đào tài nguyên
+       
+
 if (interaction.options.getSubcommand() === 'mine') {
     if (!userData[userId].inventory || !Array.isArray(userData[userId].inventory) || userData[userId].inventory.length === 0) {
         return interaction.reply('❌ Bạn chưa có cúp nào để đào! Hãy mua trong /shop.');
@@ -144,29 +144,27 @@ if (interaction.options.getSubcommand() === 'mine') {
         return interaction.reply('❌ Bạn chưa chọn vùng đất để đào! Hãy dùng /land để chọn.');
     }
 
-    // Tìm vùng đất mà người chơi đang ở
+ 
     const planet = gameData.find(p => p.location === location);
     if (!planet || !Array.isArray(planet.area) || planet.area.length === 0) {
         return interaction.reply('❌ Không có vùng đất hợp lệ tại hành tinh này.');
     }
 
-    // Chọn một vùng đất ngẫu nhiên trong khu vực
+
     const selectedArea = planet.area[Math.floor(Math.random() * planet.area.length)];
 
-    // Kiểm tra xem vùng đất đó có tài nguyên không
     if (!Array.isArray(selectedArea.creature) || selectedArea.creature.length === 0) {
         return interaction.reply('❌ Không có tài nguyên nào để đào tại vùng đất này.');
     }
 
-    // Chọn ngẫu nhiên một tài nguyên trong vùng đất
+
     const foundOre = selectedArea.creature[Math.floor(Math.random() * selectedArea.creature.length)];
 
-    // Cập nhật tiền cho người chơi
+ 
     if (!moneyData[userId]) moneyData[userId] = { money: 0 };
     moneyData[userId].money += foundOre.sell;
     fs.writeFileSync(moneyFile, JSON.stringify(moneyData, null, 2));
 
-    // Tạo Embed hiển thị thông tin tài nguyên
     const embed = new EmbedBuilder()
         .setColor('#FFA500')
         .setTitle('⛏️ Đào tài nguyên!')
@@ -178,7 +176,6 @@ if (interaction.options.getSubcommand() === 'mine') {
 }
 
 
-        // Chọn vùng đất
         if (interaction.options.getSubcommand() === 'land') {
             let landList = gameData.map((area, index) => `**${index + 1}. ${area.location}**`).join('\n');
 
@@ -222,7 +219,7 @@ if (interaction.options.getSubcommand() === 'mine') {
         }
         
 
-        // Đổi cúp hiện tại
+
         if (interaction.options.getSubcommand() === 'change') {
             if (userData[userId].inventory.length === 0) {
                 return interaction.reply('❌ **Bạn chưa có cúp nào!** Hãy mua tại `/minecraft shop`.');
@@ -248,7 +245,7 @@ if (interaction.options.getSubcommand() === 'mine') {
                 userData[userId].pickaxe = userData[userId].inventory[index].name;
 fs.writeFileSync(userFile, JSON.stringify(userData, null, 2));
 
-// Đảm bảo không gọi lại shop
+
 return msg.reply({
     content: `✅ **Bạn đã đổi sang cúp ${userData[userId].pickaxe}!**`,
     ephemeral: true 
