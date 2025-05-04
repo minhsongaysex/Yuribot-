@@ -17,7 +17,7 @@ module.exports = {
     ),
 
   async execute(interaction) {
-    await interaction.deferReply(); // Hiển thị trạng thái bot đang xử lý
+    await interaction.deferReply(); 
 
     const username = interaction.options.getString("username");
 
