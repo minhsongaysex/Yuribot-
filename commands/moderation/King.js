@@ -68,7 +68,7 @@ module.exports = {
         return interaction.reply({ content: '❌ Người dùng này không có trong server!', ephemeral: true });
       }
 
-      const randomOutcome = Math.random() < 0.5; // Tỉ lệ 50% kick ngẫu nhiên
+      const randomOutcome = Math.random() < 0.5; 
 
       if (randomOutcome) {
         try {
@@ -107,7 +107,7 @@ module.exports = {
       await interaction.reply({ embeds: [embed] });
     }
 
-    // ❌ Xử lý lệnh OFF
+   
     else if (subcommand === 'off') {
       activeDeobamUsers.clear();
       activeCuongepUsers.clear();
@@ -116,19 +116,16 @@ module.exports = {
     }
   },
 
-  /**
-   * Xử lý tin nhắn trong server (deobam và cuongep)
-   */
+
   handleMessage(message) {
     const userId = message.author.id;
 
-    // 👻 Nếu người dùng bị "đeo bám", xóa tin nhắn
     if (activeDeobamUsers.has(userId)) {
       message.delete().catch(console.error);
       return;
     }
 
-    // 🚨 Nếu người dùng bị "cưỡng ép", xóa tin nhắn nếu không đúng câu
+
     const requiredSentence = activeCuongepUsers.get(userId);
     if (requiredSentence && message.content !== requiredSentence) {
       message.delete().catch(console.error);
